@@ -1,0 +1,6 @@
+HOST1=core1.yourcompany.com
+USER1=readonlyDBuser
+PASS1=12345
+HOST2=core2.yourcompany.com
+USER2=readonlyDBuser-for-core2
+PASS2=54321
