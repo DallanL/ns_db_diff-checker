@@ -13,7 +13,7 @@ setup venv and install requirements:
 cd ns_db_diff-checker
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements
+pip install -r requirements.txt
 ```
 
 update env file:
