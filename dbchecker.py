@@ -17,6 +17,7 @@ UNIQUE_KEY_FIELDS = {
     "huntgroup_config": ["huntgroup_name", "huntgroup_domain"],
     "huntgroup_entry_config": ["device_aor", "huntgroup_name", "huntgroup_domain"],
     "time_frame_selections": ["domain", "user", "time_frame_name"],
+    "timeframe_master": ["name", "user", "domain"],
 }
 
 # Define fields to ignore for each table.
@@ -68,6 +69,7 @@ def choose_table():
         "5": "huntgroup_config",
         "6": "huntgroup_entry_config",
         "7": "time_frame_selections",
+        "8": "timeframe_master",
     }
     print("Select the table to compare:")
     for option, table in tables.items():
@@ -103,7 +105,7 @@ def get_unique_key(row, unique_fields):
     return tuple(normalize_value(row.get(field, "")) for field in unique_fields)
 
 
-def compare_data(valid_data, test_data, unique_fields, ignore_fields):
+def compare_data(valid_data, test_data, unique_fields, ignore_fields, HOST2):
     """
     Compare rows from the valid (host1) and test (host2) datasets using a unique key.
     Reports:
@@ -122,7 +124,7 @@ def compare_data(valid_data, test_data, unique_fields, ignore_fields):
     for key, valid_row in valid_dict.items():
         if key not in test_dict:
             diffs.append(
-                f"Missing in test DB (host2) for unique key {key}:\n  Valid row: {valid_row}"
+                f"Missing in test DB {HOST2} for unique key {key}:\n  Valid row: {valid_row}"
             )
             error_count += 1
         else:
@@ -146,7 +148,7 @@ def compare_data(valid_data, test_data, unique_fields, ignore_fields):
     for key, test_row in test_dict.items():
         if key not in valid_dict:
             diffs.append(
-                f"Extra row in test DB (host2) for unique key {key}:\n  Test row: {test_row}"
+                f"Extra row in test DB {HOST2} for unique key {key}:\n  Test row: {test_row}"
             )
             error_count += 1
 
@@ -189,6 +191,7 @@ def main():
         "password": get_env_or_prompt("PASS2", "Enter TEST DB Password (PASS2): "),
         "database": DB_NAME,
     }
+    HOST2 = test_db_config.get("host")
 
     try:
         valid_conn = mysql.connector.connect(**valid_db_config)
@@ -205,7 +208,7 @@ def main():
     test_data = fetch_table_data(test_conn, selected_table)
 
     diffs, error_count = compare_data(
-        valid_data, test_data, unique_fields, ignore_fields
+        valid_data, test_data, unique_fields, ignore_fields, HOST2
     )
 
     if diffs:
