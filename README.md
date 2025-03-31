@@ -1,4 +1,4 @@
-compares the tables of 2 netsapiens nodes and prints out important-ish differences between entries/missing entries
+compares the tables of a list of netsapiens nodes and prints out important-ish differences between entries/missing entries
 
 
 ### INSTALL
@@ -22,19 +22,20 @@ cp env-evample .env
 vim .env
 ```
 
-delete any entry you'd like to enter on the fly, the program will either read the .env file, OR ask you for each of these values upon running
+#### .env Configuration
+The new version uses a JSON-formatted dictionary in the HOSTS environment variable. This dictionary should contain the host URLs as keys and a dictionary with "username" and "password" as values. For example:
 ```
-HOST1=core1.yourcompany.com
-USER1=readonlyDBuser
-PASS1=12345
-HOST2=core2.yourcompany.com
-USER2=readonlyDBuser-for-core2
-PASS2=54321
+HOSTS={"core1.yourcompany.com": {"username": "readonlyDBuser", "password": "12345"}, "core2.yourcompany.com": {"username": "readonlyDBuser-for-core2", "password": "54321"}}
 ```
 
+### Usage
 run the program and choose the table to check:
 ```bash
-r$ python3 dbchecker.py
+python3 dbchecker.py
+```
+
+you will be prompted to select which table to compare:
+```
 Select the table to compare:
   1: subscriber_config
   2: dialplan_config
@@ -42,6 +43,8 @@ Select the table to compare:
   4: callqueue_config
   5: huntgroup_config
   6: huntgroup_entry_config
+  7: time_frame_selections
+  8: timeframe_master
 Enter your choice: 
 ```
 
